@@ -23,6 +23,21 @@
 		action: invoked by player
 		damage: on receiving dmg
 ]]
+
+local utils=require 'utils'
+local fields=require 'fields'
+local game={}
+local i=0
+function game:add_object(obj)
+	print("adding object",obj:get_type(), "to play")
+	--parse rules
+end
+game.fields={
+	deck=fields.stack{game=game},
+	hand=fields.hand{game=game}
+}
+--[[
+local cards=require 'cards'
 local NOOP_TBL={}
 setmetatable(NOOP_TBL,{__index=function() return NOOP_TBL end,__call=function() return NOOP_TBL end})
 function spell_sth( env )
@@ -108,9 +123,10 @@ function getInfo(f,player)
 	info.cost=env.cost or 0
 	info.desc=env.desc or ""
 	info.trigger=env.trigger or "action"
-	printall(info)
+	--printall(info)
 end
 getInfo(spell_sth)
 getInfo(spell_sth2)
 getInfo(spell_link)
 getInfo(spell_draw)
+--]]
