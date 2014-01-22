@@ -70,20 +70,23 @@ function spell_draw(env)
 	local _ENV=env
 	desc="when other player uses a card you may draw a card"
 	cost=1
-	trigger="card.action"
+	trigger="action.card"
 	if player:ask("Do you want to draw a card") then
 		player:draw_card(1)
 	end
 end
-function printall(t)
-	print(">>")
+function printall(t,tabs)
+	if tabs==nil then
+		tabs=""
+	else
+		tabs=tabs..'\t'
+	end
 	for k,v in pairs(t) do
-		print(k,v)
+		print(tabs..k,v)
 		if type(v)=='table' then
-			printall(v)
+			printall(v,tabs)
 		end
 	end
-	print("<<")
 end
 function getInfo(f,player)
 	local env={ipairs=ipairs,pairs=pairs,table=table}
@@ -94,9 +97,13 @@ function getInfo(f,player)
 		return NOOP_TBL
 	end
 	env.getTarget=getTarget_fake
-	env.player=player or NOOP_TBL --replace with real player
+	if player then
+		env.player=player --replace with real player
+	end
+
 	setmetatable(env,{__index=function(tbl,key) return rawget(tbl,key) or NOOP_TBL  end}) --skip all unknown stuff
 	f(env)
+	setmetatable(env,nil)
 
 	info.cost=env.cost or 0
 	info.desc=env.desc or ""
